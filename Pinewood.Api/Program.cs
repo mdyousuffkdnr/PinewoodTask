@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pinewood.Api.Controllers;
 using Pinewood.Api.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,5 +31,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+ 
 app.Run();
