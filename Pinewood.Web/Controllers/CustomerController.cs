@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Pinewood.Web.Models;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -8,12 +9,12 @@ namespace Pinewood.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        Uri baseAddress = new Uri("https://localhost:44344/api");
         private readonly HttpClient _httpClient;
-        public CustomerController()
+ 
+        public CustomerController(IConfiguration config)
         {
                 _httpClient = new HttpClient();
-                _httpClient.BaseAddress = baseAddress;
+                _httpClient.BaseAddress = new Uri(config.GetConnectionString("CustomerApi"));
         }
 
         [HttpGet]
@@ -53,7 +54,6 @@ namespace Pinewood.Web.Controllers
                         return RedirectToAction("Index");
 
                     }
-
                 }
             }
             catch (Exception ex)
@@ -99,11 +99,11 @@ namespace Pinewood.Web.Controllers
                     string data = JsonConvert.SerializeObject(model);
                     StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = _httpClient.PutAsync(_httpClient.BaseAddress + "/Customer/Put", content).Result;
+
                     if (response.IsSuccessStatusCode)
                     {
                         TempData["successMessage"] = "Customer details updated";
                         return RedirectToAction("Index");
-
                     }
                 }
             }
